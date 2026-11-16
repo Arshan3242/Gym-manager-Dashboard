@@ -215,6 +215,167 @@
   }
 }
 </style>
+<style id="mobile-fullscreen-touch-fix">
+  * {
+    box-sizing: border-box !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    background: var(--bg-page) !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* 100% Full-Screen Edge-to-Edge Mobile App */
+  .app-layout {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .navbar {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 500 !important;
+  }
+
+  .brand-subtitle, .date-badge, #openSettingsModalBtn, #exportCsvBtn, #openAddModalBtn {
+    display: none !important;
+  }
+  #openAuditLogBtn span { display: none !important; }
+
+  .main-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px 12px 100px 12px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .metrics-grid, .finance-cards-grid, .expense-items-grid, .form-row.two-cols {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .metric-card, .finance-section-card, .fin-card, .table-container-card, .mobile-member-card, .expense-item-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .finance-header, .finance-controls, .toolbar-section, .filters-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .finance-select, .select-dropdown, #resetFinanceToCurrentBtn, #openExpenseModalBtn {
+    width: 100% !important;
+    min-height: 44px !important;
+  }
+
+  .data-table, .table-header-actions {
+    display: none !important;
+  }
+
+  .mobile-members-cards-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 4px 0 !important;
+  }
+
+  .app-tab-hidden {
+    display: none !important;
+  }
+
+  /* Bottom Bar (Modals se neeche rahega taaki Save/Delete button na dabe) */
+  .mobile-bottom-nav {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 64px !important;
+    z-index: 1000 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+
+  .mobile-bottom-nav .nav-item * {
+    pointer-events: none !important;
+  }
+
+  /* MODALS & POPUPS: Bottom Bar se Hamesha Upar (z-index: 50000) + Smooth Scroll */
+  .modal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 50000 !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .modal-backdrop.show {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .modal-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92dvh !important;
+    margin: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateY(0) !important;
+    z-index: 50001 !important;
+  }
+
+  .modal-body {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex: 1 1 auto !important;
+    padding: 14px !important;
+  }
+
+  .modal-footer {
+    flex-shrink: 0 !important;
+    padding: 12px 14px calc(16px + env(safe-area-inset-bottom, 0px)) 14px !important;
+    display: flex !important;
+    gap: 10px !important;
+    background: var(--bg-card) !important;
+    z-index: 50002 !important;
+  }
+
+  .modal-footer .btn {
+    flex: 1 !important;
+    min-height: 46px !important;
+    font-size: 0.95rem !important;
+  }
+}
+</style>
 
 </head>
 <body>
@@ -1632,6 +1793,70 @@
 
     // Default screen: Overview
     if (tabs[0]) switchAppScreen('overview', tabs[0]);
+  });
+</script>
+<script id="mobile-actions-and-nav-fix">
+  window.addEventListener('load', function() {
+    // 1. Bottom Navigation Tab Switcher
+    const oldNav = document.querySelector('.mobile-bottom-nav');
+    if (oldNav) {
+      const nav = oldNav.cloneNode(true);
+      oldNav.parentNode.replaceChild(nav, oldNav);
+      const tabs = Array.from(nav.querySelectorAll('.nav-item, button, a'));
+
+      const secOverview = document.querySelector('.metrics-grid');
+      const secFinance = document.querySelectorAll('.finance-section-card');
+      const secToolbar = document.querySelector('.toolbar-section');
+      const secMembers = document.querySelector('.table-container-card');
+
+      function openTab(mode, activeEl) {
+        tabs.forEach(t => t.classList.remove('active'));
+        if (activeEl && !activeEl.classList.contains('nav-fab')) activeEl.classList.add('active');
+
+        if (secOverview) secOverview.classList.add('app-tab-hidden');
+        secFinance.forEach(el => el.classList.add('app-tab-hidden'));
+        if (secToolbar) secToolbar.classList.add('app-tab-hidden');
+        if (secMembers) secMembers.classList.add('app-tab-hidden');
+
+        if (mode === 'overview') {
+          if (secOverview) secOverview.classList.remove('app-tab-hidden');
+          if (secMembers) secMembers.classList.remove('app-tab-hidden');
+        } else if (mode === 'revenue') {
+          secFinance.forEach(el => el.classList.remove('app-tab-hidden'));
+        } else if (mode === 'members') {
+          if (secToolbar) secToolbar.classList.remove('app-tab-hidden');
+          if (secMembers) secMembers.classList.remove('app-tab-hidden');
+        }
+        window.scrollTo(0, 0);
+      }
+
+      tabs.forEach((btn, idx) => {
+        if (btn.tagName === 'A') btn.removeAttribute('href');
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const txt = (btn.innerText || btn.textContent || '').toLowerCase();
+
+          if (idx === 0 || txt.includes('overview')) openTab('overview', btn);
+          else if (idx === 1 || txt.includes('revenue')) openTab('revenue', btn);
+          else if (idx === 2 || btn.classList.contains('nav-fab') || txt.includes('add')) {
+            if (typeof openAddModal === 'function') openAddModal();
+          }
+          else if (idx === 3 || txt.includes('member')) openTab('members', btn);
+          else if (idx === 4 || txt.includes('setting')) {
+            if (typeof openSettingsModal === 'function') openSettingsModal();
+          }
+        });
+      });
+
+      if (tabs[0]) openTab('overview', tabs[0]);
+    }
+
+    // 2. Ensure Delete Confirmation Button always works on Mobile Touch
+    const confirmDelBtn = document.getElementById('confirmDeleteBtn');
+    if (confirmDelBtn) {
+      confirmDelBtn.style.pointerEvents = 'auto';
+    }
   });
 </script>
 

@@ -422,6 +422,115 @@
     max-width: 100% !important;
   }
 </style>
+<style id="vibrant-clean-dashboard-theme">
+  /* 1. Rich Colorful Background & Clean Spacing */
+  body, .app-layout {
+    background: linear-gradient(180deg, #0f172a 0%, #131c31 100%) !important;
+  }
+
+  html[data-theme="light"] body,
+  html[data-theme="light"] .app-layout {
+    background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  }
+
+  .navbar {
+    background: linear-gradient(90deg, #1e1b4b 0%, #0f172a 100%) !important;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.3) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  html[data-theme="light"] .navbar {
+    background: linear-gradient(90deg, #4f46e5 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+  }
+  html[data-theme="light"] .navbar .brand-title,
+  html[data-theme="light"] .navbar .icon-btn-tiny,
+  html[data-theme="light"] .navbar .theme-toggle {
+    color: #ffffff !important;
+  }
+
+  .main-container {
+    padding: 16px 14px 96px 14px !important;
+    gap: 18px !important;
+  }
+
+  /* 2. Vibrant Gradient Cards (No More Black & White Look) */
+  .card-active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 78, 59, 0.45) 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.45) !important;
+  }
+
+  .card-expiring {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(120, 53, 15, 0.45) 100%) !important;
+    border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  }
+
+  .card-pending {
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.22) 0%, rgba(136, 19, 55, 0.45) 100%) !important;
+    border: 1px solid rgba(244, 63, 94, 0.45) !important;
+  }
+
+  /* Financial Cards Colorful Accents */
+  .fin-card-received {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  }
+
+  .fin-card-pending {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.16) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+  }
+
+  .fin-card-year-rev {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+    border: 1px solid rgba(99, 102, 241, 0.35) !important;
+  }
+
+  .fin-card-year-pen {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  }
+
+  /* 3. Reduce Clutter / Bhid Kam Karne Ke Liye Clean Spacing */
+  .metric-card, .fin-card, .finance-section-card, .mobile-member-card {
+    padding: 16px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Extra sub-badges aur footer hint hide karke clean look dena */
+  .metric-footer, .fin-footer, .app-info-footer {
+    display: none !important;
+  }
+
+  /* Member Cards ko zyada airy aur colorful banana */
+  .mobile-member-card {
+    background: linear-gradient(145deg, #1e293b 0%, #162033 100%) !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    gap: 12px !important;
+  }
+
+  html[data-theme="light"] .mobile-member-card {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .mob-dates-grid {
+    background: rgba(99, 102, 241, 0.08) !important;
+    border: 1px solid rgba(99, 102, 241, 0.18) !important;
+    padding: 10px !important;
+  }
+
+  /* Colorful Bottom Nav */
+  .mobile-bottom-nav {
+    background: linear-gradient(90deg, #1e1b4b 0%, #0f172a 100%) !important;
+    border-top: 1px solid rgba(99, 102, 241, 0.35) !important;
+  }
+
+  .mobile-bottom-nav .nav-item.active {
+    color: #38bdf8 !important;
+  }
+</style>
 
 </head>
 <body>

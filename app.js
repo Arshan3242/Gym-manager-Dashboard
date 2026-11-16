@@ -2291,4 +2291,256 @@ function updateFilterPillsActiveUI() {
       pill.classList.remove('active');
     }
   });
+  // ==========================================================================
+  // Mobile Bottom Navigation Bar Logic (Overview, Revenue, Add, Members, Settings)
+  // ==========================================================================
+  const mobileNavItems = document.querySelectorAll('.mobile-bottom-nav .nav-item');
+
+  function setActiveMobileTab(clickedItem) {
+    mobileNavItems.forEach(item => item.classList.remove('active'));
+    if (clickedItem) clickedItem.classList.add('active');
+  }
+
+  mobileNavItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const labelEl = item.querySelector('.nav-label');
+      const tabName = (item.getAttribute('data-tab') || (labelEl ? labelEl.textContent : '')).trim().toLowerCase();
+
+      if (tabName.includes('overview')) {
+        setActiveMobileTab(item);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } 
+      else if (tabName.includes('revenue')) {
+        setActiveMobileTab(item);
+        const financeSec = document.querySelector('.finance-section-card');
+        if (financeSec) {
+          const yOffset = -75;
+          const y = financeSec.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      } 
+      else if (tabName.includes('add')) {
+        openAddModal();
+      } 
+      else if (tabName.includes('member')) {
+        setActiveMobileTab(item);
+        const membersSec = document.querySelector('.toolbar-section') || document.querySelector('.table-container-card');
+        if (membersSec) {
+          const yOffset = -75;
+          const y = membersSec.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      } 
+      else if (tabName.includes('setting')) {
+        openSettingsModal();
+      }
+    });
+  });
+
+  // Auto-update active tab on scroll
+  window.addEventListener('scroll', () => {
+    if (window.innerWidth > 768) return;
+    const scrollPos = window.scrollY + 180;
+    const financeSec = document.querySelector('.finance-section-card');
+    const membersSec = document.querySelector('.toolbar-section');
+
+    if (membersSec && scrollPos >= membersSec.offsetTop) {
+      mobileNavItems.forEach(i => {
+        const txt = i.textContent.trim().toLowerCase();
+        i.classList.toggle('active', txt.includes('member'));
+      });
+    } else if (financeSec && scrollPos >= financeSec.offsetTop) {
+      mobileNavItems.forEach(i => {
+        const txt = i.textContent.trim().toLowerCase();
+        i.classList.toggle('active', txt.includes('revenue'));
+      });
+    } else {
+      mobileNavItems.forEach(i => {
+        const txt = i.textContent.trim().toLowerCase();
+        i.classList.toggle('active', txt.includes('overview'));
+      });
+    }
+  }, { passive: true });
+
 }
+// ==========================================================================
+// GYM EXPENSE TRACKER MODULE (Non-Intrusive Add-on)
+// ==========================================================================
+const STORAGE_KEY_EXPENSES = 'gymflow_expenses_data_v1';
+let gymExpenses = [];
+
+function initExpenseTracker() {
+  const raw = localStorage.getItem(STORAGE_KEY_EXPENSES);
+  if (raw) {
+    try {
+      gymExpenses = JSON.parse(raw);
+    } catch (e) {
+      gymExpenses = [];
+    }
+  }
+  if (!Array.isArray(gymExpenses)) gymExpenses = [];
+
+  // Bind Modal & Form Events
+  const openBtn = document.getElementById('openExpenseModalBtn');
+  const closeBtn = document.getElementById('closeExpenseModalBtn');
+  const cancelBtn = document.getElementById('cancelExpenseBtn');
+  const form = document.getElementById('expenseForm');
+
+  if (openBtn) {
+    openBtn.addEventListener('click', () => {
+      if (form) form.reset();
+      const dateInput = document.getElementById('expenseDateInput');
+      if (dateInput) dateInput.value = formatDateToInput(new Date());
+      openModal('expenseModalBackdrop');
+    });
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', () => closeModal('expenseModalBackdrop'));
+  if (cancelBtn) cancelBtn.addEventListener('click', () => closeModal('expenseModalBackdrop'));
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('expenseTitleInput').value.trim();
+      const amount = parseFloat(document.getElementById('expenseAmountInput').value);
+      const category = document.getElementById('expenseCategorySelect').value;
+      const date = document.getElementById('expenseDateInput').value;
+
+      if (!title || isNaN(amount) || amount <= 0 || !date) {
+        showToast('Please fill all expense details properly', 'warning');
+        return;
+      }
+
+      const newExpense = {
+        id: 'EXP-' + Date.now(),
+        title,
+        amount,
+        category,
+        date,
+        createdAt: new Date().toISOString()
+      };
+
+      gymExpenses.unshift(newExpense);
+      localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(gymExpenses));
+
+      if (typeof logAuditEvent === 'function') {
+        logAuditEvent('SYSTEM', `Gym Expense Added: ₹${amount} (${title})`, `Category: ${category} | Date: ${date}`);
+      }
+
+      closeModal('expenseModalBackdrop');
+      renderExpenseTracker();
+      showToast(`Added expense: ${title} (₹${amount.toLocaleString('en-IN')})`, 'success');
+    });
+  }
+
+  // Hook into existing updateFinancialSummary so changing Month/Year updates Expenses too
+  if (typeof updateFinancialSummary === 'function') {
+    const originalUpdateFinance = updateFinancialSummary;
+    window.updateFinancialSummary = function() {
+      originalUpdateFinance();
+      renderExpenseTracker();
+    };
+  }
+
+  renderExpenseTracker();
+}
+
+window.deleteGymExpense = function(expId) {
+  const target = gymExpenses.find(x => x.id === expId);
+  if (!target) return;
+  if (!confirm(`Remove expense "${target.title}" (₹${target.amount})?`)) return;
+
+  gymExpenses = gymExpenses.filter(x => x.id !== expId);
+  localStorage.setItem(STORAGE_KEY_EXPENSES, JSON.stringify(gymExpenses));
+
+  if (typeof logAuditEvent === 'function') {
+    logAuditEvent('DELETE', `Gym Expense Deleted: ${target.title}`, `Amount: ₹${target.amount}`);
+  }
+
+  renderExpenseTracker();
+  showToast('Expense entry removed', 'info');
+};
+
+function renderExpenseTracker() {
+  const month = typeof selectedFinanceMonth !== 'undefined' ? selectedFinanceMonth : new Date().getMonth();
+  const year = typeof selectedFinanceYear !== 'undefined' ? selectedFinanceYear : new Date().getFullYear();
+
+  let monthlyExpTotal = 0;
+  let yearlyExpTotal = 0;
+  const monthlyItems = [];
+
+  gymExpenses.forEach(exp => {
+    if (!exp.date) return;
+    const d = new Date(exp.date);
+    const eYear = d.getFullYear();
+    const eMonth = d.getMonth();
+    const amt = Number(exp.amount) || 0;
+
+    if (eYear === year) {
+      yearlyExpTotal += amt;
+      if (eMonth === month) {
+        monthlyExpTotal += amt;
+        monthlyItems.push(exp);
+      }
+    }
+  });
+
+  // Read Monthly Received Revenue directly from existing DOM element to calculate Net Profit
+  const recText = (document.getElementById('monthlyReceivedAmount')?.textContent || '0').replace(/[^\d]/g, '');
+  const monthlyReceived = parseInt(recText, 10) || 0;
+  const netProfit = monthlyReceived - monthlyExpTotal;
+
+  // Update Cards
+  const monExpEl = document.getElementById('monthlyExpenseAmount');
+  if (monExpEl) monExpEl.textContent = `₹${monthlyExpTotal.toLocaleString('en-IN')}`;
+
+  const monExpSub = document.getElementById('monthlyExpenseSubtext');
+  if (monExpSub) monExpSub.textContent = `${monthlyItems.length} expense${monthlyItems.length === 1 ? '' : 's'} in selected month`;
+
+  const netEl = document.getElementById('monthlyNetProfitAmount');
+  if (netEl) {
+    netEl.textContent = `${netProfit < 0 ? '-' : ''}₹${Math.abs(netProfit).toLocaleString('en-IN')}`;
+    netEl.style.color = netProfit >= 0 ? '#10b981' : '#ef4444';
+  }
+
+  const yrExpEl = document.getElementById('yearlyExpenseAmount');
+  if (yrExpEl) yrExpEl.textContent = `₹${yearlyExpTotal.toLocaleString('en-IN')}`;
+
+  const yrExpSub = document.getElementById('yearlyExpenseSubtext');
+  if (yrExpSub) yrExpSub.textContent = `Total expenses in ${year}`;
+
+  const countEl = document.getElementById('expenseListCount');
+  if (countEl) countEl.textContent = `${monthlyItems.length} item${monthlyItems.length === 1 ? '' : 's'}`;
+
+  // Render Cards List
+  const container = document.getElementById('expenseItemsContainer');
+  if (!container) return;
+
+  if (monthlyItems.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 1.25rem; color: var(--text-dim); font-size: 0.82rem; background: var(--bg-card-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border-subtle);">
+        No expenses recorded for this month yet. Click "Add Expense" to log rent, bills, or salaries.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = monthlyItems.map(item => `
+    <div class="expense-item-card">
+      <div class="expense-item-info">
+        <span class="expense-item-title">${escapeHtml(item.title)}</span>
+        <span class="expense-item-meta">${escapeHtml(item.category)} • ${formatDateDisplay(item.date)}</span>
+      </div>
+      <div class="expense-item-right">
+        <span class="expense-item-amt">-₹${Number(item.amount).toLocaleString('en-IN')}</span>
+        <button type="button" class="btn-action-delete" onclick="deleteGymExpense('${item.id}')" title="Delete Expense">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', initExpenseTracker);

@@ -531,6 +531,122 @@
     color: #38bdf8 !important;
   }
 </style>
+<style id="unique-compact-member-cards">
+  /* Clean Spacious Member Card Design */
+  .mobile-members-cards-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 6px 0 !important;
+  }
+
+  .mobile-member-card {
+    padding: 14px 16px !important;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)) !important;
+    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22) !important;
+    transition: all 0.25s ease !important;
+    cursor: pointer !important;
+    gap: 0 !important;
+  }
+
+  html[data-theme="light"] .mobile-member-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  /* Top Compact Row: Always Visible */
+  .mob-card-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+  }
+
+  .mob-avatar {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    border-radius: 14px !important; /* Modern Squircle Avatar */
+  }
+
+  .mob-member-name {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  /* Compact Status Chip right under name */
+  .mob-compact-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-top: 4px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .mob-mini-pill {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 999px !important;
+  }
+
+  .mob-expand-chevron {
+    font-size: 0.75rem !important;
+    color: var(--text-dim) !important;
+    margin-left: 6px !important;
+    transition: transform 0.25s ease !important;
+    display: inline-block !important;
+  }
+
+  .mobile-member-card.is-expanded .mob-expand-chevron {
+    transform: rotate(180deg) !important;
+    color: #38bdf8 !important;
+  }
+
+  /* Collapsible Details Drawer (Hidden by default to remove clutter!) */
+  .mob-badges-row,
+  .mob-dates-grid,
+  .mob-actions-section {
+    display: none !important;
+  }
+
+  /* Show smoothly when user taps the card */
+  .mobile-member-card.is-expanded .mob-badges-row {
+    display: flex !important;
+    margin-top: 12px !important;
+    padding: 8px 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .mobile-member-card.is-expanded .mob-dates-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
+    padding: 10px 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .mobile-member-card.is-expanded .mob-actions-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 12px !important;
+    padding-top: 10px !important;
+    border-top: 1px dashed rgba(148, 163, 184, 0.2) !important;
+  }
+
+  /* Hide extra phone/plan text in collapsed state for ultra-clean look */
+  .mobile-member-card:not(.is-expanded) .mob-member-phone,
+  .mobile-member-card:not(.is-expanded) .mob-plan-type {
+    display: none !important;
+  }
+</style>
 
 </head>
 <body>
@@ -2012,6 +2128,65 @@
     if (confirmDelBtn) {
       confirmDelBtn.style.pointerEvents = 'auto';
     }
+  });
+</script>
+<script id="unique-card-accordion-logic">
+  document.addEventListener('click', function(e) {
+    // Agar user ne kisi action button ya link par click kiya hai toh card toggle na karein
+    if (e.target.closest('button, a, input, select')) return;
+
+    const card = e.target.closest('.mobile-member-card');
+    if (!card) return;
+
+    // Baaki khule cards ko band karke clean rakhein (Accordion effect)
+    document.querySelectorAll('.mobile-member-card.is-expanded').forEach(function(other) {
+      if (other !== card) other.classList.remove('is-expanded');
+    });
+
+    card.classList.toggle('is-expanded');
+  });
+
+  // Har card par clean status pill + arrow indicator automatically inject karein
+  const observer = new MutationObserver(function() {
+    document.querySelectorAll('.mobile-member-card').forEach(function(card) {
+      if (card.dataset.enhanced === 'true') return;
+      card.dataset.enhanced = 'true';
+
+      const userText = card.querySelector('.mob-user-text');
+      const statusBadge = card.querySelector('.status-badge');
+      const payBadge = card.querySelector('.payment-badge');
+      const priceBadge = card.querySelector('.mob-card-price-badge');
+
+      if (userText && statusBadge) {
+        const metaRow = document.createElement('div');
+        metaRow.className = 'mob-compact-meta';
+
+        const isExpired = card.classList.contains('card-border-expired');
+        const isExpiring = card.classList.contains('card-border-expiring');
+        const pillColor = isExpired ? 'background: rgba(239,68,68,0.18); color: #f87171;'
+                        : isExpiring ? 'background: rgba(245,158,11,0.18); color: #fbbf24;'
+                        : 'background: rgba(16,185,129,0.18); color: #34d399;';
+
+        const payText = payBadge ? payBadge.textContent.trim() : '';
+        metaRow.innerHTML = `
+          <span class="mob-mini-pill" style="${pillColor}">${statusBadge.textContent.trim()}</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">${payText}</span>
+        `;
+        userText.appendChild(metaRow);
+      }
+
+      if (priceBadge) {
+        const arrow = document.createElement('span');
+        arrow.className = 'mob-expand-chevron';
+        arrow.innerHTML = '▼ Details';
+        priceBadge.appendChild(arrow);
+      }
+    });
+  });
+
+  window.addEventListener('load', function() {
+    const list = document.getElementById('mobileMembersCardsList');
+    if (list) observer.observe(list, { childList: true, subtree: true });
   });
 </script>
 

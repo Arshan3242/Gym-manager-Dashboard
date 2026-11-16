@@ -2600,3 +2600,106 @@ document.addEventListener('DOMContentLoaded', initExpenseTracker);
     setupNav();
   }
 })();
+// ==========================================================================
+// SINGLE MASTER MOBILE NAVIGATION HANDLER (Conflict-Free & Exact Scroll)
+// ==========================================================================
+(function initCleanMobileNavigation() {
+  let isManualScrolling = false;
+  let scrollTimeout = null;
+
+  function setupCleanNav() {
+    const bottomNav = document.querySelector('.mobile-bottom-nav');
+    if (!bottomNav) return;
+
+    // Purane duplicate listeners hatane ke liye node clone karein
+    const cleanNav = bottomNav.cloneNode(true);
+    bottomNav.parentNode.replaceChild(cleanNav, bottomNav);
+
+    const navButtons = Array.from(cleanNav.querySelectorAll('.nav-item'));
+
+    function highlightTabByIndex(idx) {
+      navButtons.forEach((btn, i) => {
+        if (i === idx && !btn.classList.contains('nav-fab')) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function smoothJumpTo(element, tabIdx) {
+      if (!element) return;
+      isManualScrolling = true;
+      highlightTabByIndex(tabIdx);
+
+      const headerHeight = document.querySelector('.navbar')?.offsetHeight || 60;
+      const targetY = element.getBoundingClientRect().top + window.scrollY - headerHeight - 10;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'smooth'
+      });
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isManualScrolling = false;
+      }, 800);
+    }
+
+    // Button position aur text dono ke hisab se exact action
+    navButtons.forEach((btn, index) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const label = btn.textContent.trim().toLowerCase();
+
+        if (index === 0 || label.includes('overview')) {
+          isManualScrolling = true;
+          highlightTabByIndex(0);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => { isManualScrolling = false; }, 800);
+        } 
+        else if (index === 1 || label.includes('revenue')) {
+          const revSection = document.querySelector('.finance-section-card');
+          smoothJumpTo(revSection, 1);
+        } 
+        else if (index === 2 || btn.classList.contains('nav-fab') || label.includes('add')) {
+          if (typeof openAddModal === 'function') openAddModal();
+        } 
+        else if (index === 3 || label.includes('member')) {
+          const memSection = document.querySelector('.toolbar-section') || document.querySelector('.table-container-card');
+          smoothJumpTo(memSection, 3);
+        } 
+        else if (index === 4 || label.includes('setting')) {
+          if (typeof openSettingsModal === 'function') openSettingsModal();
+        }
+      });
+    });
+
+    // Scroll karte waqt active tab update karein (bina tap se takraye)
+    window.addEventListener('scroll', () => {
+      if (window.innerWidth > 768 || isManualScrolling) return;
+
+      const headerOffset = 140;
+      const scrollY = window.scrollY + headerOffset;
+      const revSection = document.querySelector('.finance-section-card');
+      const memSection = document.querySelector('.toolbar-section') || document.querySelector('.table-container-card');
+
+      if (memSection && scrollY >= memSection.offsetTop) {
+        highlightTabByIndex(3);
+      } else if (revSection && scrollY >= revSection.offsetTop) {
+        highlightTabByIndex(1);
+      } else {
+        highlightTabByIndex(0);
+      }
+    }, { passive: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCleanNav);
+  } else {
+    setupCleanNav();
+  }
+})();

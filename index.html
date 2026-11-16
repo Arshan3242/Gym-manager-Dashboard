@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0d1117">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,6 +12,210 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+<style id="pure-mobile-app-pov">
+  /* 1. Reset & Native App Container */
+  * {
+    box-sizing: border-box !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    background-color: #060911 !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Poora app ek real Smartphone Frame (100% on phone, centered app-frame on PC) */
+  .app-layout {
+    width: 100% !important;
+    max-width: 480px !important;
+    min-height: 100vh !important;
+    margin: 0 auto !important;
+    background: var(--bg-page) !important;
+    position: relative !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* 2. App Top Header Bar */
+  .navbar {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+  }
+
+  .nav-brand .brand-logo { width: 36px !important; height: 36px !important; }
+  .nav-brand .brand-title { font-size: 1.05rem !important; max-width: 185px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .brand-subtitle, .date-badge, #openSettingsModalBtn, #exportCsvBtn, #openAddModalBtn {
+    display: none !important;
+  }
+  #openAuditLogBtn span { display: none !important; }
+  #openAuditLogBtn { padding: 8px !important; }
+
+  /* 3. Main App Screen Area */
+  .main-container {
+    width: 100% !important;
+    padding: 14px 12px 92px 12px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  /* Single Column App Cards */
+  .metrics-grid,
+  .finance-cards-grid,
+  .expense-items-grid,
+  .form-row.two-cols,
+  .backup-actions-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .metric-card,
+  .finance-section-card,
+  .fin-card,
+  .table-container-card,
+  .mobile-member-card,
+  .expense-item-card,
+  .app-info-footer {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  /* Finance & Expense Controls Mobile Stack */
+  .finance-header, .finance-controls, .toolbar-section, .filters-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .finance-select, .select-dropdown, #resetFinanceToCurrentBtn, #openExpenseModalBtn {
+    width: 100% !important;
+    min-height: 42px !important;
+  }
+
+  .filter-pills {
+    display: flex !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+    padding: 4px !important;
+    gap: 6px !important;
+  }
+
+  /* Hide Desktop Table Completely, Show Native App Cards */
+  .data-table, .table-header-actions {
+    display: none !important;
+  }
+
+  .mobile-members-cards-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 4px 0 !important;
+  }
+
+  /* 4. App Tab Switching System (Har Tab par Alag Screen Khulegi) */
+  .app-tab-hidden {
+    display: none !important;
+  }
+
+  /* 5. Native App Bottom Navigation Bar */
+  .mobile-bottom-nav {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    align-items: center !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    height: 66px !important;
+    background: rgba(15, 23, 42, 0.96) !important;
+    backdrop-filter: blur(16px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    z-index: 99999 !important;
+    padding: 0 4px !important;
+  }
+
+  html[data-theme="light"] .mobile-bottom-nav {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border-top: 1px solid #e2e8f0 !important;
+  }
+
+  .mobile-bottom-nav .nav-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    height: 100% !important;
+    color: var(--text-muted) !important;
+    cursor: pointer !important;
+  }
+
+  .mobile-bottom-nav .nav-item.active {
+    color: #3b82f6 !important;
+  }
+
+  .mobile-bottom-nav .nav-item * {
+    pointer-events: none !important;
+  }
+
+  .mobile-bottom-nav .nav-label {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+
+  .mobile-bottom-nav .nav-fab {
+    margin-top: -20px !important;
+  }
+
+  .mobile-bottom-nav .nav-fab .nav-fab-btn {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #3b82f6, #10b981) !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5) !important;
+  }
+
+  /* 6. Native Bottom-Sheet Modals */
+  .modal-backdrop {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .modal-dialog {
+    width: 100% !important;
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    border-radius: 22px 22px 0 0 !important;
+    max-height: 90vh !important;
+  }
+}
+</style>
+
 </head>
 <body>
   <!-- App Container -->
@@ -1357,6 +1562,78 @@
     </form>
   </div>
 </div>
+<script id="pure-mobile-app-controller">
+  window.addEventListener('load', function() {
+    const oldNav = document.querySelector('.mobile-bottom-nav');
+    if (!oldNav) return;
+
+    // Clean listeners
+    const nav = oldNav.cloneNode(true);
+    oldNav.parentNode.replaceChild(nav, oldNav);
+    const tabs = Array.from(nav.querySelectorAll('.nav-item, button, a'));
+
+    // App Sections
+    const secOverview = document.querySelector('.metrics-grid');
+    const secFinance = document.querySelectorAll('.finance-section-card'); // Revenue + Expense dono
+    const secToolbar = document.querySelector('.toolbar-section');
+    const secMembers = document.querySelector('.table-container-card');
+
+    function switchAppScreen(screenName, activeBtn) {
+      tabs.forEach(t => t.classList.remove('active'));
+      if (activeBtn && !activeBtn.classList.contains('nav-fab')) {
+        activeBtn.classList.add('active');
+      }
+
+      // Pehle sab hide karein
+      if (secOverview) secOverview.classList.add('app-tab-hidden');
+      secFinance.forEach(el => el.classList.add('app-tab-hidden'));
+      if (secToolbar) secToolbar.classList.add('app-tab-hidden');
+      if (secMembers) secMembers.classList.add('app-tab-hidden');
+
+      // Selected screen dikhayein
+      if (screenName === 'overview') {
+        if (secOverview) secOverview.classList.remove('app-tab-hidden');
+        // Overview ke neeche quick recent members bhi dikhane ke liye:
+        if (secMembers) secMembers.classList.remove('app-tab-hidden');
+      } 
+      else if (screenName === 'revenue') {
+        secFinance.forEach(el => el.classList.remove('app-tab-hidden'));
+      } 
+      else if (screenName === 'members') {
+        if (secToolbar) secToolbar.classList.remove('app-tab-hidden');
+        if (secMembers) secMembers.classList.remove('app-tab-hidden');
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    tabs.forEach((btn, idx) => {
+      if (btn.tagName === 'A') btn.removeAttribute('href');
+
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const label = (btn.innerText || btn.textContent || '').toLowerCase();
+
+        if (idx === 0 || label.includes('overview')) {
+          switchAppScreen('overview', btn);
+        } else if (idx === 1 || label.includes('revenue')) {
+          switchAppScreen('revenue', btn);
+        } else if (idx === 2 || btn.classList.contains('nav-fab') || label.includes('add')) {
+          if (typeof openAddModal === 'function') openAddModal();
+        } else if (idx === 3 || label.includes('member')) {
+          switchAppScreen('members', btn);
+        } else if (idx === 4 || label.includes('setting')) {
+          if (typeof openSettingsModal === 'function') openSettingsModal();
+        }
+      });
+    });
+
+    // Default screen: Overview
+    if (tabs[0]) switchAppScreen('overview', tabs[0]);
+  });
+</script>
 
 </body>
 </html>

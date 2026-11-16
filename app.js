@@ -2544,3 +2544,59 @@ function renderExpenseTracker() {
 }
 
 document.addEventListener('DOMContentLoaded', initExpenseTracker);
+// ==========================================================================
+// BULLETPROOF MOBILE BOTTOM NAVIGATION HANDLER (Real Smartphone Touch Support)
+// ==========================================================================
+(function initBulletproofMobileNav() {
+  function setupNav() {
+    const bottomNav = document.querySelector('.mobile-bottom-nav') || document.querySelector('nav[class*="bottom"]');
+    if (!bottomNav) return;
+
+    function handleNavTap(e) {
+      const targetBtn = e.target.closest('.nav-item, button, a');
+      if (!targetBtn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Highlight active tab
+      bottomNav.querySelectorAll('.nav-item, button, a').forEach(el => el.classList.remove('active'));
+      targetBtn.classList.add('active');
+
+      const text = (targetBtn.getAttribute('data-tab') || targetBtn.textContent || '').trim().toLowerCase();
+
+      if (text.includes('overview') || text.includes('home')) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } 
+      else if (text.includes('revenue') || text.includes('finance')) {
+        const el = document.querySelector('.finance-section-card');
+        if (el) {
+          const topPos = el.getBoundingClientRect().top + window.scrollY - 70;
+          window.scrollTo({ top: topPos, behavior: 'smooth' });
+        }
+      } 
+      else if (text.includes('add') || targetBtn.classList.contains('nav-fab')) {
+        if (typeof openAddModal === 'function') openAddModal();
+      } 
+      else if (text.includes('member')) {
+        const el = document.querySelector('.toolbar-section') || document.querySelector('.table-container-card');
+        if (el) {
+          const topPos = el.getBoundingClientRect().top + window.scrollY - 70;
+          window.scrollTo({ top: topPos, behavior: 'smooth' });
+        }
+      } 
+      else if (text.includes('setting')) {
+        if (typeof openSettingsModal === 'function') openSettingsModal();
+      }
+    }
+
+    // Both click and touchstart/touchend support
+    bottomNav.addEventListener('click', handleNavTap);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupNav);
+  } else {
+    setupNav();
+  }
+})();

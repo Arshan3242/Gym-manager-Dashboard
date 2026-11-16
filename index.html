@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>GymFlow - Gym Manager & Membership Automation Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-layout">
+    
+    <!-- Top Navbar -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"/>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <div class="brand-title-wrap">
+            <h1 class="brand-title" id="gymNameDisplay">IronFit Gym</h1>
+            <button class="icon-btn-tiny" id="editGymNameBtn" title="Edit Gym Name & Settings">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </button>
+          </div>
+          <span class="brand-subtitle" id="gymTaglineDisplay">Membership Automation & Daily Ops</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Date Badge -->
+        <div class="date-badge" id="currentDateBadge">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span id="liveDateText">Today</span>
+        </div>
+
+        <!-- Audit Log Button -->
+        <button class="btn btn-secondary" id="openAuditLogBtn" title="Immutable System Audit Ledger">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <span>Audit Log</span>
+        </button>
+
+        <!-- Settings & Backup Button -->
+        <button class="btn btn-secondary" id="openSettingsModalBtn" title="Gym Settings & JSON Backup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>Settings & Backup</span>
+        </button>
+
+        <!-- Export CSV Button -->
+        <button class="btn btn-secondary" id="exportCsvBtn" title="Export to Excel / Google Sheets">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Export CSV</span>
+        </button>
+
+        <!-- Add Member Button -->
+        <button class="btn btn-primary" id="openAddModalBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>Add Member</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+
+      <!-- SECTION 1: Top Daily Report Cards -->
+      <section class="metrics-grid" id="overviewSection">
+        <!-- Card 1: Active Memberships -->
+        <div class="metric-card card-active" id="statCardActive" role="button" tabindex="0" title="Click to filter Active Members">
+          <div class="metric-header">
+            <div class="metric-meta">
+              <span class="metric-badge green-badge">Chalu / Active</span>
+              <h2 class="metric-title">Active Memberships</h2>
+            </div>
+            <div class="metric-icon-wrap icon-green">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-body">
+            <span class="metric-value" id="activeCount">0</span>
+            <span class="metric-subtext">Members in good standing</span>
+          </div>
+          <div class="metric-footer">
+            <span class="metric-pill pill-green">
+              <span class="pulse-dot green-dot"></span> Active Gym-Goers
+            </span>
+            <span class="metric-click-hint">Filter list →</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Expiring Soon / Expired -->
+        <div class="metric-card card-expiring" id="statCardExpiring" role="button" tabindex="0" title="Click to filter Expiring / Expired">
+          <div class="metric-header">
+            <div class="metric-meta">
+              <span class="metric-badge amber-badge">Khatam ho chuki / Hone wali</span>
+              <h2 class="metric-title">Expiring Soon / Expired</h2>
+            </div>
+            <div class="metric-icon-wrap icon-amber">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-body">
+            <span class="metric-value" id="expiringCount">0</span>
+            <div class="metric-breakdown">
+              <span class="badge-mini badge-yellow" id="expiring3DaysBreakdown">0 Expiring ≤3d</span>
+              <span class="badge-mini badge-red" id="expiredBreakdown">0 Expired</span>
+            </div>
+          </div>
+          <div class="metric-footer">
+            <span class="metric-pill pill-amber">
+              <span class="pulse-dot amber-dot"></span> WhatsApp Reminder Ready
+            </span>
+            <span class="metric-click-hint">Filter list →</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Pending Payments -->
+        <div class="metric-card card-pending" id="statCardPending" role="button" tabindex="0" title="Click to filter Pending Payments">
+          <div class="metric-header">
+            <div class="metric-meta">
+              <span class="metric-badge red-badge">Baaki Payments</span>
+              <h2 class="metric-title">Pending Payments</h2>
+            </div>
+            <div class="metric-icon-wrap icon-red">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-body">
+            <span class="metric-value" id="pendingAmount">₹0</span>
+            <span class="metric-subtext" id="pendingMembersCount">0 members with pending fees</span>
+          </div>
+          <div class="metric-footer">
+            <span class="metric-pill pill-red">
+              <span class="pulse-dot red-dot"></span> Immediate Follow-up
+            </span>
+            <span class="metric-click-hint">Filter list →</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: Revenue & Financial Summary (कमाई और हिसाब-किताब) -->
+      <section class="finance-section-card" id="revenueSection">
+        <div class="finance-header">
+          <div class="finance-title-wrap">
+            <div class="finance-icon-badge">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="finance-heading-row">
+                <h3 class="finance-main-title">Revenue & Financial Summary</h3>
+                <span class="finance-hindi-tag">कमाई और हिसाब-किताब</span>
+              </div>
+              <p class="finance-subtitle">Live cash collection, monthly dues & full year earnings summary</p>
+            </div>
+          </div>
+
+          <!-- Month & Year Filter Dropdowns -->
+          <div class="finance-controls">
+            <div class="finance-filter-group">
+              <label for="financeMonthSelect" class="finance-filter-label">Month (महीना):</label>
+              <select id="financeMonthSelect" class="select-dropdown finance-select">
+                <option value="0">January (जनवरी)</option>
+                <option value="1">February (फ़रवरी)</option>
+                <option value="2">March (मार्च)</option>
+                <option value="3">April (अप्रैल)</option>
+                <option value="4">May (मई)</option>
+                <option value="5">June (जून)</option>
+                <option value="6">July (जुलाई)</option>
+                <option value="7">August (अगस्त)</option>
+                <option value="8">September (सितंबर)</option>
+                <option value="9">October (अक्टूबर)</option>
+                <option value="10">November (नवंबर)</option>
+                <option value="11">December (दिसंबर)</option>
+              </select>
+            </div>
+
+            <div class="finance-filter-group">
+              <label for="financeYearSelect" class="finance-filter-label">Year (साल):</label>
+              <select id="financeYearSelect" class="select-dropdown finance-select">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+              </select>
+            </div>
+
+            <button type="button" class="btn btn-ghost-sm" id="resetFinanceToCurrentBtn" title="Reset to current month & year">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+              <span>Current Month (यह महीना)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Clean Financial Summary Cards in ₹ -->
+        <div class="finance-cards-grid">
+          <!-- Card 1: Monthly Received Payment -->
+          <div class="fin-card fin-card-received" id="cardMonthlyReceived">
+            <div class="fin-card-top">
+              <div class="fin-meta">
+                <span class="fin-badge fin-badge-green">Paid Collection • इस महीने की वसूली</span>
+                <h4 class="fin-title">Monthly Received Payment (₹)</h4>
+              </div>
+              <div class="fin-icon-wrap fin-icon-green">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+              </div>
+            </div>
+            <div class="fin-amount" id="monthlyReceivedAmount">₹0</div>
+            <div class="fin-footer">
+              <span class="fin-subtext" id="monthlyReceivedSubtext">From Paid members</span>
+              <span class="fin-pill fin-pill-green">Verified Paid</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Monthly Pending Payment -->
+          <div class="fin-card fin-card-pending" id="cardMonthlyPending">
+            <div class="fin-card-top">
+              <div class="fin-meta">
+                <span class="fin-badge fin-badge-red">Dues / Expired • इस महीने की बाकी</span>
+                <h4 class="fin-title">Monthly Pending Payment (₹)</h4>
+              </div>
+              <div class="fin-icon-wrap fin-icon-red">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+            </div>
+            <div class="fin-amount" id="monthlyPendingAmount">₹0</div>
+            <div class="fin-footer">
+              <span class="fin-subtext" id="monthlyPendingSubtext">Due from Pending & Expired</span>
+              <span class="fin-pill fin-pill-red">Action Needed</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Full Year Revenue -->
+          <div class="fin-card fin-card-year-rev" id="cardFullYearRevenue">
+            <div class="fin-card-top">
+              <div class="fin-meta">
+                <span class="fin-badge fin-badge-blue">12-Month Total • पूरे साल की कुल कमाई</span>
+                <h4 class="fin-title">Full Year Revenue (₹)</h4>
+              </div>
+              <div class="fin-icon-wrap fin-icon-blue">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+            </div>
+            <div class="fin-amount" id="fullYearRevenueAmount">₹0</div>
+            <div class="fin-footer">
+              <span class="fin-subtext" id="fullYearRevenueSubtext">Total collected across year</span>
+              <span class="fin-pill fin-pill-blue">Yearly Net</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Full Year Pending -->
+          <div class="fin-card fin-card-year-pen" id="cardFullYearPending">
+            <div class="fin-card-top">
+              <div class="fin-meta">
+                <span class="fin-badge fin-badge-amber">Annual Dues • पूरे साल का बाकी पैसा</span>
+                <h4 class="fin-title">Full Year Pending (₹)</h4>
+              </div>
+              <div class="fin-icon-wrap fin-icon-amber">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+            </div>
+            <div class="fin-amount" id="fullYearPendingAmount">₹0</div>
+            <div class="fin-footer">
+              <span class="fin-subtext" id="fullYearPendingSubtext">Total unpaid dues in year</span>
+              <span class="fin-pill fin-pill-amber">Uncollected</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: Control Toolbar (Search, Filter, Quick Stats, Bulk) -->
+      <section class="toolbar-section">
+        <div class="search-box-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search by name, phone (+91), or plan..." autocomplete="off">
+          <button class="clear-search-btn" id="clearSearchBtn" title="Clear Search" style="display: none;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="filters-wrap">
+          <!-- Status Filter Pills -->
+          <div class="filter-pills" id="filterPillsContainer">
+            <button class="filter-pill active" data-filter="all">All (<span id="countAll">0</span>)</button>
+            <button class="filter-pill" data-filter="active">🟢 Active (<span id="countActivePill">0</span>)</button>
+            <button class="filter-pill" data-filter="expiring">🟡 Expiring in 3d (<span id="countExpiringPill">0</span>)</button>
+            <button class="filter-pill" data-filter="expired">🔴 Renewal Miss (<span id="countExpiredPill">0</span>)</button>
+            <button class="filter-pill" data-filter="pending">⚠️ Pending (₹<span id="countPendingPill">0</span>)</button>
+            <button class="filter-pill" data-filter="paid">✅ Paid</button>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="sort-wrap">
+            <label for="sortBySelect" class="sr-only">Sort by</label>
+            <select id="sortBySelect" class="select-dropdown">
+              <option value="expiryAsc">⏳ Expiry: Soonest First</option>
+              <option value="expiryDesc">⌛ Expiry: Latest First</option>
+              <option value="nameAsc">🔤 Name: A to Z</option>
+              <option value="amountDesc">💰 Plan Amount: High to Low</option>
+              <option value="joinDesc">📅 Recently Joined</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Main Member List Table -->
+      <section class="table-container-card" id="membersSection">
+        <div class="table-card-header">
+          <div class="table-title-area">
+            <h3 class="table-title">Registered Gym Members</h3>
+            <span class="table-subtitle" id="tableResultsCount">Showing 5 members</span>
+          </div>
+
+          <div class="table-header-actions">
+            <!-- Reset / Sample Data -->
+            <button class="btn btn-ghost-sm" id="seedSampleDataBtn" title="Load sample testing data">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Reload Sample Data</span>
+            </button>
+            <!-- Print List -->
+            <button class="btn btn-ghost-sm" id="printTableBtn" title="Print or Save PDF">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              <span>Print</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="membersTable">
+            <thead>
+              <tr>
+                <th class="col-member">Member Name & Contact</th>
+                <th class="col-plan">Plan Amount</th>
+                <th class="col-dates">Join & Expiry Dates</th>
+                <th class="col-status">Status Badge</th>
+                <th class="col-payment">Payment</th>
+                <th class="col-whatsapp">WhatsApp Reminder</th>
+                <th class="col-actions text-right">Quick Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersTableBody">
+              <!-- Dynamically populated via JavaScript -->
+            </tbody>
+          </table>
+
+          <!-- Mobile Cards View for Small Screens (< 768px) -->
+          <div class="mobile-members-cards-list" id="mobileMembersCardsList">
+            <!-- Dynamically populated via JavaScript for native mobile experience -->
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon-wrap">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <h4>No gym members found</h4>
+            <p id="emptyStateMsg">Try adjusting your search terms or filters.</p>
+            <button class="btn btn-primary btn-sm" id="emptyAddBtn">Add New Member</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- WhatsApp Tips Banner -->
+      <footer class="app-info-footer">
+        <div class="info-tag">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <span><strong>One-Click WhatsApp:</strong> Click any green WhatsApp button to launch web or mobile WhatsApp directly with pre-crafted Hinglish renewal reminders.</span>
+        </div>
+        <div class="storage-tag">
+          <span>💾 Stored securely in Browser LocalStorage</span>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- MODAL 1: Add / Edit Member -->
+  <div class="modal-backdrop" id="memberModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge" id="modalIconBadge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="8.5" cy="7" r="4"/>
+              <line x1="20" y1="8" x2="20" y2="14"/>
+              <line x1="23" y1="11" x2="17" y2="11"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title" id="modalTitle">Add New Member</h3>
+            <p class="modal-subtitle">Fill in membership details below</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeMemberModalBtn" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="memberForm" novalidate>
+        <input type="hidden" id="memberIdField" value="">
+
+        <div class="modal-body">
+          <!-- Member Name -->
+          <div class="form-group">
+            <label for="memberNameInput" class="form-label">
+              Member Full Name <span class="required">*</span>
+            </label>
+            <div class="input-with-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input type="text" id="memberNameInput" class="form-control" placeholder="e.g. Rahul Sharma" required>
+            </div>
+            <span class="field-error" id="nameError">Please enter the member's full name.</span>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-group">
+            <label for="memberPhoneInput" class="form-label">
+              Phone Number (WhatsApp) <span class="required">*</span>
+            </label>
+            <div class="input-with-icon">
+              <svg class="field-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              <input type="tel" id="memberPhoneInput" class="form-control" placeholder="e.g. 9876543210 or +91 98765..." required>
+            </div>
+            <span class="field-hint">Used for 1-Click WhatsApp renewal alerts</span>
+            <span class="field-error" id="phoneError">Please enter a valid 10-digit mobile number.</span>
+          </div>
+
+          <div class="form-row two-cols">
+            <!-- Plan Amount -->
+            <div class="form-group">
+              <label for="planAmountInput" class="form-label">
+                Plan Amount (₹) <span class="required">*</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="currency-prefix">₹</span>
+                <input type="number" id="planAmountInput" class="form-control pl-curr" placeholder="1500" min="0" step="50" required>
+              </div>
+              <span class="field-error" id="amountError">Please enter a valid amount.</span>
+            </div>
+
+            <!-- Payment Status -->
+            <div class="form-group">
+              <label for="paymentStatusSelect" class="form-label">
+                Payment Status <span class="required">*</span>
+              </label>
+              <select id="paymentStatusSelect" class="form-control select-control" required>
+                <option value="Paid">✅ Paid</option>
+                <option value="Pending">⚠️ Pending (Baaki)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row two-cols">
+            <!-- Join Date -->
+            <div class="form-group">
+              <label for="joinDateInput" class="form-label">
+                Join Date <span class="required">*</span>
+              </label>
+              <input type="date" id="joinDateInput" class="form-control" required>
+            </div>
+
+            <!-- Expiry Date -->
+            <div class="form-group">
+              <label for="expiryDateInput" class="form-label">
+                Expiry Date <span class="required">*</span>
+              </label>
+              <input type="date" id="expiryDateInput" class="form-control" required>
+            </div>
+          </div>
+
+          <!-- Quick Duration Helper Buttons -->
+          <div class="duration-presets">
+            <span class="presets-label">Quick Plan Presets:</span>
+            <div class="preset-buttons">
+              <button type="button" class="preset-btn" data-days="30">+1 Month (30d)</button>
+              <button type="button" class="preset-btn" data-days="90">+3 Months</button>
+              <button type="button" class="preset-btn" data-days="180">+6 Months</button>
+              <button type="button" class="preset-btn" data-days="365">+1 Year</button>
+            </div>
+          </div>
+
+          <!-- Optional Plan Type / Notes -->
+          <div class="form-group mt-2">
+            <label for="planTypeInput" class="form-label">Plan / Batch (Optional)</label>
+            <input type="text" id="planTypeInput" class="form-control" placeholder="e.g. Strength & Cardio, Morning 7 AM">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelModalBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveMemberBtn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span id="saveBtnText">Save Member</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: WhatsApp Reminder Preview / Customizer -->
+  <div class="modal-backdrop" id="waModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-sm" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge wa-icon-badge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">WhatsApp Reminder</h3>
+            <p class="modal-subtitle" id="waRecipientInfo">Sending to Member</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeWaModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="wa-preview-box">
+          <label class="form-label">Message Preview (Hindi / English):</label>
+          <textarea id="waMessageText" class="form-control wa-textarea" rows="4"></textarea>
+          <span class="field-hint">You can edit the text before sending if you wish.</span>
+        </div>
+        <div class="wa-action-hints">
+          <span>📲 Clicking below opens WhatsApp on your phone or web browser directly.</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelWaBtn">Cancel</button>
+        <button type="button" class="btn btn-whatsapp" id="sendDirectWaBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+          </svg>
+          <span>Open in WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Delete Confirmation -->
+  <div class="modal-backdrop" id="deleteModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-sm" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge danger-badge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              <line x1="10" y1="11" x2="10" y2="17"/>
+              <line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Delete Member</h3>
+            <p class="modal-subtitle">Confirm member removal</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeDeleteModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove <strong id="deleteMemberName"></strong>? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Member</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Settings & Full JSON Backup Modal -->
+  <div class="modal-backdrop" id="settingsModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge settings-icon-badge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Settings & Backup (सेटिंग्स और बैकअप)</h3>
+            <p class="modal-subtitle">Gym branding, receipt info & full JSON database</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeSettingsModalBtn" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Section 1: Gym Branding -->
+        <div class="settings-card-group">
+          <h4 class="settings-group-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"/>
+            </svg>
+            Gym Profile & Branding (जिम की जानकारी)
+          </h4>
+
+          <div class="form-group">
+            <label for="settingsGymNameInput" class="form-label">Gym Name (जिम का नाम)</label>
+            <input type="text" id="settingsGymNameInput" class="form-control" placeholder="e.g. IronFit Gym & Fitness">
+          </div>
+
+          <div class="form-group">
+            <label for="settingsGymTaglineInput" class="form-label">Tagline / Subtitle (टैगलाइन)</label>
+            <input type="text" id="settingsGymTaglineInput" class="form-control" placeholder="e.g. Membership Automation & Daily Ops">
+          </div>
+
+          <div class="form-row two-cols">
+            <div class="form-group">
+              <label for="settingsGymPhoneInput" class="form-label">Contact / Phone (रसीद के लिए)</label>
+              <input type="text" id="settingsGymPhoneInput" class="form-control" placeholder="+91 98765 00000">
+            </div>
+            <div class="form-group">
+              <label for="settingsGymAddressInput" class="form-label">Location / Address (पता)</label>
+              <input type="text" id="settingsGymAddressInput" class="form-control" placeholder="e.g. Main Market, City Center">
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-sm mt-1" id="saveGymSettingsBtn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span>Save Profile & Branding</span>
+          </button>
+        </div>
+
+        <!-- Section 2: Full JSON Backup & Restore -->
+        <div class="settings-card-group">
+          <h4 class="settings-group-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="21 8 21 21 3 21 3 8"/>
+              <rect x="1" y="3" width="22" height="5"/>
+              <line x1="10" y1="12" x2="14" y2="12"/>
+            </svg>
+            Full JSON Data Backup & Restore (डेटा बैकअप)
+          </h4>
+          <p class="field-hint mb-2">Export your complete gym database (all members, payment histories, and settings) into a JSON file, or restore from a previously exported backup.</p>
+
+          <div class="backup-actions-grid">
+            <!-- Export JSON -->
+            <div class="backup-card">
+              <div class="backup-card-info">
+                <strong>Export Full Backup</strong>
+                <span>Download complete `.json` database file</span>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="exportJsonBackupBtn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Export JSON</span>
+              </button>
+            </div>
+
+            <!-- Import JSON -->
+            <div class="backup-card">
+              <div class="backup-card-info">
+                <strong>Restore Full Backup</strong>
+                <span>Upload a previously saved `.json` file</span>
+              </div>
+              <input type="file" id="importJsonFileInput" accept=".json,application/json" style="display: none;">
+              <button type="button" class="btn btn-secondary btn-sm" id="triggerImportJsonBtn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Import JSON</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="closeSettingsFooterBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: Printable Digital Fee Receipt Modal -->
+  <div class="modal-backdrop" id="receiptModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-receipt-dialog" role="dialog" aria-modal="true">
+      <div class="modal-header modal-no-print">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge receipt-icon-badge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Fee Receipt (डिजिटल फीस रसीद)</h3>
+            <p class="modal-subtitle">Official payment acknowledgement & voucher</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeReceiptModalBtn" aria-label="Close modal">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Printable Receipt Voucher Area -->
+      <div class="modal-body p-0">
+        <div class="printable-receipt" id="printableReceiptArea">
+          <!-- Receipt Header -->
+          <div class="receipt-header">
+            <div class="receipt-brand-row">
+              <div class="receipt-logo">
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"/>
+                </svg>
+              </div>
+              <div class="receipt-gym-details">
+                <h2 class="receipt-gym-name" id="receiptGymName">IronFit Gym & Fitness</h2>
+                <span class="receipt-gym-tagline" id="receiptGymTagline">Membership Automation & Daily Ops</span>
+                <span class="receipt-gym-contact" id="receiptGymContact">Contact: +91 98765 00000 | Location: Main Market</span>
+              </div>
+            </div>
+
+            <div class="receipt-stamp-badge">
+              <div class="paid-stamp">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>PAID</span>
+              </div>
+              <span class="receipt-stamp-sub">फीस जमा</span>
+            </div>
+          </div>
+
+          <!-- Receipt Voucher Meta Bar -->
+          <div class="receipt-voucher-bar">
+            <div>
+              <span class="voucher-label">Receipt No:</span>
+              <strong class="voucher-val" id="receiptNo">REC-2026-001</strong>
+            </div>
+            <div>
+              <span class="voucher-label">Payment Date (तारीख):</span>
+              <strong class="voucher-val" id="receiptPaymentDateDisplay">—</strong>
+            </div>
+          </div>
+
+          <!-- Receipt Content Key-Values -->
+          <div class="receipt-details-table">
+            <div class="receipt-row">
+              <span class="receipt-col-label">Member Name (सदस्य का नाम):</span>
+              <strong class="receipt-col-val" id="receiptMemberName">—</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-col-label">Phone / WhatsApp (फ़ोन):</span>
+              <span class="receipt-col-val" id="receiptMemberPhone">+91 —</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-col-label">Plan / Batch (प्लान):</span>
+              <span class="receipt-col-val" id="receiptPlanType">—</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-col-label">Expiry Date (वैधता / अंतिम तारीख):</span>
+              <strong class="receipt-col-val receipt-expiry-highlight" id="receiptExpiryDateDisplay">—</strong>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-col-label">Payment Status (भुगतान स्थिति):</span>
+              <span class="receipt-col-val text-success"><strong>✅ Full Payment Cleared</strong></span>
+            </div>
+          </div>
+
+          <!-- Total Amount Highlight Box -->
+          <div class="receipt-total-card">
+            <div class="receipt-total-left">
+              <span class="receipt-total-label">Amount Paid (कुल जमा फीस):</span>
+              <span class="receipt-total-sub">Includes all gym facility access</span>
+            </div>
+            <div class="receipt-total-amount" id="receiptAmountPaidDisplay">₹0</div>
+          </div>
+
+          <!-- Receipt Footer & Signature -->
+          <div class="receipt-bottom-meta">
+            <div class="receipt-terms">
+              <span>Thank you for training with us! Consistency is the key to fitness. 🏋️‍♂️💪</span>
+              <span class="receipt-system-generated">*Verified Digital Fee Receipt generated by GymFlow.</span>
+            </div>
+            <div class="receipt-sign-box">
+              <div class="sign-line"></div>
+              <span class="sign-title">Authorized Signatory</span>
+              <span class="sign-gym" id="receiptSignGymName">IronFit Gym</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Receipt Modal Footer Buttons -->
+      <div class="modal-footer modal-no-print">
+        <button type="button" class="btn btn-secondary" id="closeReceiptBtn">Close</button>
+        <button type="button" class="btn btn-secondary" id="downloadReceiptCardBtn" title="Download Digital Fee Receipt as PNG Image">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Download Card (PNG)</span>
+        </button>
+        <button type="button" class="btn btn-whatsapp" id="shareReceiptWaBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>Share on WhatsApp</span>
+        </button>
+        <button type="button" class="btn btn-primary" id="printReceiptBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          <span>Print / PDF Receipt</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 6: Double-Payment Warning Guard Modal -->
+  <div class="modal-backdrop" id="guardModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-guard" role="dialog" aria-modal="true">
+      <div class="modal-header guard-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge guard-icon-badge">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Double-Payment Warning Guard</h3>
+            <p class="modal-subtitle">दोहरा भुगतान रोकथाम चेतावनी</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeGuardModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="guard-alert-box">
+          <div class="guard-alert-icon">⚠️</div>
+          <div class="guard-alert-text">
+            <h4>Active Paid Membership Detected!</h4>
+            <p>Member <strong id="guardMemberName">Rahul Sharma</strong> already has <span class="badge-days-pill" id="guardDaysRemaining">25 days remaining</span> on an active paid plan.</p>
+          </div>
+        </div>
+
+        <div class="guard-comparison-grid">
+          <div class="guard-comp-card">
+            <span class="guard-comp-label">Current Paid Expiry (मौजूदा अंतिम तारीख):</span>
+            <strong class="guard-comp-val text-amber" id="guardCurrentExpiry">11 Dec 2026</strong>
+          </div>
+          <div class="guard-comp-card">
+            <span class="guard-comp-label">Plan Fee to be Charged (फीस राशि):</span>
+            <strong class="guard-comp-val text-green" id="guardPlanAmount">₹1,500</strong>
+          </div>
+          <div class="guard-comp-card col-span-2">
+            <span class="guard-comp-label">If Renewed Now (New Expiry Date):</span>
+            <strong class="guard-comp-val text-blue" id="guardNewExpiry">10 Jan 2027 (+30 Days from current expiry)</strong>
+          </div>
+        </div>
+
+        <p class="guard-security-note">
+          🔒 <strong>Anti-Fraud Protection:</strong> To prevent accidental or duplicate customer billing, please verify that the member is knowingly paying in advance. If confirmed, a new locked Receipt ID will be logged into the permanent audit ledger.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelGuardBtn">
+          <span>Cancel (Do Not Charge)</span>
+        </button>
+        <button type="button" class="btn btn-primary btn-confirm-advance" id="confirmGuardRenewBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Yes, Confirm Advance Renewal</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 7: Immutable Payment History Modal -->
+  <div class="modal-backdrop" id="historyModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-lg" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge history-icon-badge">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Payment History & Immutable Ledger</h3>
+            <p class="modal-subtitle" id="historyMemberSubtitle">Transactions for Member</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeHistoryModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="history-security-badge">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span><strong>Tamper-Proof & Locked:</strong> Transactions cannot be edited or deleted. Each entry records an exact timestamp and unique Receipt ID to prevent duplicate charging.</span>
+        </div>
+
+        <div class="table-responsive history-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Receipt ID</th>
+                <th>Exact Date & Time</th>
+                <th>Amount Paid</th>
+                <th>Transaction Note</th>
+                <th class="text-right">Digital Receipt</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+
+          <div class="empty-state" id="historyEmptyState" style="display: none; padding: 2rem 1rem;">
+            <h4>No payment transactions yet</h4>
+            <p>Member has no paid records logged.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="closeHistoryBtn">Close History</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 8: Read-Only Audit Log Modal -->
+  <div class="modal-backdrop" id="auditModalBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-lg" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge audit-icon-badge">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">System Audit Log (सिस्टम ऑडिट लेज़र)</h3>
+            <p class="modal-subtitle">Permanent, read-only audit trail of financial & member activities</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeAuditModalBtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="audit-security-banner">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <div>
+            <strong>Immutable System Ledger:</strong> Every member edit, renewal, payment, and deletion is timestamped and permanently preserved. Records cannot be altered or cleared to ensure anti-fraud accountability.
+          </div>
+        </div>
+
+        <!-- Audit Toolbar (Search & Filter) -->
+        <div class="audit-toolbar">
+          <div class="audit-search-wrap">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="auditSearchInput" placeholder="Search audit logs (name, receipt #, action)...">
+          </div>
+          <select id="auditFilterSelect" class="select-dropdown audit-select">
+            <option value="ALL">All Events (सभी रिकॉर्ड)</option>
+            <option value="PAYMENT">Payments & Renewals (भुगतान)</option>
+            <option value="MEMBER">Member Changes (सदस्य)</option>
+            <option value="SYSTEM">System & Settings (सिस्टम)</option>
+          </select>
+        </div>
+
+        <!-- Audit Log Entries List -->
+        <div class="audit-log-container">
+          <div class="audit-entries-list" id="auditLogList">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="audit-footer-left">
+          <span class="audit-total-text" id="auditLogCount">Total Events: 0</span>
+        </div>
+        <div class="audit-footer-actions">
+          <button type="button" class="btn btn-secondary" id="exportAuditCsvBtn" title="Export full audit trail">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Export Audit CSV</span>
+          </button>
+          <button type="button" class="btn btn-primary" id="closeAuditBtn">Close Audit Log</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Native Mobile App Bottom Navigation Bar (< 768px) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
+    <button class="nav-item active" id="mobNavOverview" type="button" title="Daily Overview">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </div>
+      <span class="nav-label">Overview</span>
+    </button>
+
+    <button class="nav-item" id="mobNavRevenue" type="button" title="Revenue & Financials">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <span class="nav-label">Revenue</span>
+    </button>
+
+    <!-- Floating Center Action Button for Adding New Member -->
+    <button class="nav-item nav-fab" id="mobNavAdd" type="button" title="Add New Gym Member">
+      <div class="nav-fab-btn">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <span class="nav-label">Add Member</span>
+    </button>
+
+    <button class="nav-item" id="mobNavMembers" type="button" title="Gym Members List">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <span class="nav-label">Members</span>
+    </button>
+
+    <button class="nav-item" id="mobNavSettings" type="button" title="Settings & Backup">
+      <div class="nav-icon-wrap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+      <span class="nav-label">Settings</span>
+    </button>
+  </nav>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -647,6 +647,178 @@
     display: none !important;
   }
 </style>
+<style id="compact-neat-top-cards">
+  /* 1. Compact 2-Column Top Grid (Saves 50% Screen Height!) */
+  .metrics-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  /* Teesra Card (Pending Payments) neeche full-width sleek banner banega */
+  .metrics-grid .card-pending {
+    grid-column: span 2 !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 14px 16px !important;
+  }
+
+  .metrics-grid .card-pending .metric-header {
+    margin-bottom: 0 !important;
+  }
+
+  .metrics-grid .card-pending .metric-body {
+    align-items: flex-end !important;
+    text-align: right !important;
+  }
+
+  /* 2. Neat, Compact & Clutter-Free Card Styling */
+  .metric-card {
+    padding: 12px 14px !important;
+    border-radius: 16px !important;
+    gap: 6px !important;
+    min-height: auto !important;
+    justify-content: space-between !important;
+  }
+
+  .metric-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+  }
+
+  /* Extra tags aur lambi sub-lines hide karke clean look dena */
+  .metric-badge,
+  .metric-subtext,
+  .metric-breakdown,
+  .metric-footer {
+    display: none !important;
+  }
+
+  .metric-title {
+    font-size: 0.84rem !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.01em !important;
+    color: var(--text-main) !important;
+  }
+
+  .metric-icon-wrap {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .metric-icon-wrap svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .metric-value {
+    font-size: 1.55rem !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    margin-top: 2px !important;
+  }
+</style>
+<style id="owner-time-saver-ui">
+  /* Today's Action Center (Clean & Compact) */
+  .urgent-followup-box {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 18px;
+    padding: 14px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  html[data-theme="light"] .urgent-followup-box {
+    background: #ffffff;
+    border: 1px solid #fde68a;
+  }
+
+  .urgent-box-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .urgent-box-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .urgent-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    gap: 8px;
+  }
+
+  html[data-theme="light"] .urgent-row {
+    background: #f8fafc;
+  }
+
+  .urgent-user-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .urgent-user-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .urgent-user-due {
+    font-size: 0.72rem;
+    color: #f87171;
+    font-weight: 600;
+  }
+
+  /* Quick-Fill Plan Chips in Add Member Modal */
+  .quick-plan-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+
+  .plan-chip-btn {
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .plan-chip-btn:active {
+    background: #3b82f6;
+    color: #ffffff;
+  }
+</style>
 
 </head>
 <body>
@@ -2187,6 +2359,136 @@
   window.addEventListener('load', function() {
     const list = document.getElementById('mobileMembersCardsList');
     if (list) observer.observe(list, { childList: true, subtree: true });
+  });
+</script>
+<script id="neat-punctuation-top-cards">
+  window.addEventListener('load', function() {
+    const activeTitle = document.querySelector('#statCardActive .metric-title');
+    if (activeTitle) activeTitle.textContent = 'Active Members.';
+
+    const expiringTitle = document.querySelector('#statCardExpiring .metric-title');
+    if (expiringTitle) expiringTitle.textContent = 'Expiring / Expired.';
+
+    const pendingTitle = document.querySelector('#statCardPending .metric-title');
+    if (pendingTitle) pendingTitle.textContent = 'Pending Fees (₹).';
+  });
+</script>
+<script id="owner-time-saver-logic">
+  window.addEventListener('load', function() {
+    // 1. Add "Today's Urgent Follow-ups" widget right below Top 3 Cards
+    const metricsGrid = document.querySelector('.metrics-grid');
+    if (metricsGrid && !document.getElementById('urgentFollowupWidget')) {
+      const widget = document.createElement('div');
+      widget.id = 'urgentFollowupWidget';
+      widget.className = 'urgent-followup-box';
+      metricsGrid.insertAdjacentElement('afterend', widget);
+    }
+
+    function renderUrgentFollowups() {
+      const widget = document.getElementById('urgentFollowupWidget');
+      if (!widget || typeof members === 'undefined') return;
+
+      // Sirf Pending ya Expiring/Expired members filter karein
+      const urgentList = members.filter(m => {
+        const st = typeof getMemberStatus === 'function' ? getMemberStatus(m.expiryDate) : { code: 'active' };
+        return m.paymentStatus === 'Pending' || st.code === 'expiring' || st.code === 'expired';
+      }).slice(0, 4); // Sirf top 4 dikhayein taaki bhid na ho
+
+      if (urgentList.length === 0) {
+        widget.innerHTML = `
+          <div class="urgent-box-header">
+            <span class="urgent-box-title" style="color: #34d399;">✅ All Dues Clear!</span>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0;">Aaj kisi bhi member ki fees baaki ya expire nahi hai.</p>
+        `;
+        return;
+      }
+
+      const rowsHtml = urgentList.map(m => {
+        const waLink = typeof getDirectWaLink === 'function' ? getDirectWaLink(m) : '#';
+        const st = typeof getMemberStatus === 'function' ? getMemberStatus(m.expiryDate) : { sublabel: 'Due' };
+        return `
+          <div class="urgent-row">
+            <div class="urgent-user-meta">
+              <span class="urgent-user-name">${escapeHtml(m.name)}</span>
+              <span class="urgent-user-due">₹${Number(m.amount || 0).toLocaleString('en-IN')} • ${st.sublabel}</span>
+            </div>
+            <div style="display: flex; gap: 6px; flex-shrink: 0;">
+              <a href="tel:${m.phone}" style="padding: 6px 10px; border-radius: 10px; background: rgba(59,130,246,0.18); color: #60a5fa; font-size: 0.76rem; font-weight: 700;">📞 Call</a>
+              <a href="${waLink}" target="_blank" style="padding: 6px 10px; border-radius: 10px; background: #22c55e; color: #fff; font-size: 0.76rem; font-weight: 700;">WhatsApp</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      widget.innerHTML = `
+        <div class="urgent-box-header">
+          <span class="urgent-box-title">⚡ Urgent Follow-Ups (${urgentList.length})</span>
+          <span style="font-size: 0.7rem; color: var(--text-dim);">1-Tap Action</span>
+        </div>
+        ${rowsHtml}
+      `;
+    }
+
+    // Hook into updateDashboard so widget auto-updates on any change
+    if (typeof updateDashboard === 'function') {
+      const origUpdate = updateDashboard;
+      window.updateDashboard = function() {
+        origUpdate();
+        renderUrgentFollowups();
+      };
+    }
+    renderUrgentFollowups();
+
+    // Sync Overview Tab visibility with Urgent Widget
+    const navTabs = document.querySelectorAll('.mobile-bottom-nav .nav-item');
+    navTabs.forEach((btn, idx) => {
+      btn.addEventListener('click', function() {
+        const widget = document.getElementById('urgentFollowupWidget');
+        if (!widget) return;
+        const txt = (btn.innerText || '').toLowerCase();
+        if (idx === 0 || txt.includes('overview')) {
+          widget.classList.remove('app-tab-hidden');
+        } else if (idx === 1 || idx === 3 || txt.includes('revenue') || txt.includes('member')) {
+          widget.classList.add('app-tab-hidden');
+        }
+      });
+    });
+
+    // 2. Add 1-Tap Quick Plan Chips inside Add Member Form
+    const amountInput = document.getElementById('planAmountInput');
+    if (amountInput && !document.getElementById('quickPlanChipsBar')) {
+      const chipsBar = document.createElement('div');
+      chipsBar.id = 'quickPlanChipsBar';
+      chipsBar.className = 'quick-plan-chips';
+      const presets = [
+        { label: '₹1,000 • 1M Basic', amt: 1000, days: 30, plan: 'General Fitness' },
+        { label: '₹1,500 • 1M Cardio', amt: 1500, days: 30, plan: 'Cardio & Strength' },
+        { label: '₹3,500 • 3M Saver', amt: 3500, days: 90, plan: 'Quarterly Package' },
+        { label: '₹5,000 • PT + Diet', amt: 5000, days: 30, plan: 'Personal Training' }
+      ];
+
+      chipsBar.innerHTML = presets.map((p, i) =>
+        `<button type="button" class="plan-chip-btn" data-idx="${i}">${p.label}</button>`
+      ).join('');
+
+      amountInput.closest('.form-group').insertAdjacentElement('beforebegin', chipsBar);
+
+      chipsBar.addEventListener('click', function(e) {
+        const btn = e.target.closest('.plan-chip-btn');
+        if (!btn) return;
+        const p = presets[parseInt(btn.dataset.idx, 10)];
+        document.getElementById('planAmountInput').value = p.amt;
+        const planField = document.getElementById('planTypeInput');
+        if (planField) planField.value = p.plan;
+        const joinVal = document.getElementById('joinDateInput').value;
+        const base = joinVal ? new Date(joinVal) : new Date();
+        if (typeof addDays === 'function' && typeof formatDateToInput === 'function') {
+          document.getElementById('expiryDateInput').value = formatDateToInput(addDays(base, p.days));
+        }
+        if (typeof showToast === 'function') showToast(`Applied ${p.label}`, 'info');
+      });
+    }
   });
 </script>
 

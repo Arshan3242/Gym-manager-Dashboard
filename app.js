@@ -2703,3 +2703,82 @@ document.addEventListener('DOMContentLoaded', initExpenseTracker);
     setupCleanNav();
   }
 })();
+// ==========================================================================
+// EXACT MOBILE BOTTOM NAVIGATION SCROLL & MODAL CONTROLLER
+// ==========================================================================
+(function setupExactMobileNav() {
+  function initNav() {
+    const oldNav = document.querySelector('.mobile-bottom-nav');
+    if (!oldNav) return;
+
+    // Saare purane event listeners clean karne ke liye clone karein
+    const nav = oldNav.cloneNode(true);
+    oldNav.parentNode.replaceChild(nav, oldNav);
+
+    const items = Array.from(nav.querySelectorAll('.nav-item'));
+
+    function setActive(activeBtn) {
+      items.forEach(btn => btn.classList.remove('active'));
+      if (activeBtn && !activeBtn.classList.contains('nav-fab')) {
+        activeBtn.classList.add('active');
+      }
+    }
+
+    function scrollToSection(targetEl) {
+      if (!targetEl) return;
+      const navHeight = document.querySelector('.navbar')?.offsetHeight || 60;
+      const elementPosition = targetEl.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navHeight - 8;
+
+      window.scrollTo({
+        top: Math.max(0, offsetPosition),
+        behavior: 'smooth'
+      });
+    }
+
+    items.forEach((btn, idx) => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const txt = (btn.getAttribute('data-tab') || btn.textContent || '').trim().toLowerCase();
+
+        // 1. Overview (Top of page)
+        if (idx === 0 || txt.includes('overview')) {
+          setActive(btn);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        // 2. Revenue / Finance Section
+        else if (idx === 1 || txt.includes('revenue')) {
+          setActive(btn);
+          const revEl = document.querySelector('.finance-section-card');
+          scrollToSection(revEl);
+        }
+        // 3. Add Member (+)
+        else if (idx === 2 || btn.classList.contains('nav-fab') || txt.includes('add')) {
+          if (typeof openAddModal === 'function') {
+            openAddModal();
+          }
+        }
+        // 4. Members List Section
+        else if (idx === 3 || txt.includes('member')) {
+          setActive(btn);
+          const memEl = document.querySelector('.toolbar-section') || document.querySelector('.table-container-card');
+          scrollToSection(memEl);
+        }
+        // 5. Settings & Backup
+        else if (idx === 4 || txt.includes('setting')) {
+          if (typeof openSettingsModal === 'function') {
+            openSettingsModal();
+          }
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+})();

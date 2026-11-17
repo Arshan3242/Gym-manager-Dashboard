@@ -2159,6 +2159,11 @@ function bindEvents() {
       if (clearSearchBtn) {
         clearSearchBtn.style.display = currentSearch ? 'block' : 'none';
       }
+      // Sync inline search bar
+      const inlineSearch = document.getElementById('inlineMemberSearch');
+      if (inlineSearch) inlineSearch.value = currentSearch;
+      const clearInline = document.getElementById('clearInlineSearchBtn');
+      if (clearInline) clearInline.style.display = currentSearch ? 'block' : 'none';
       renderMembersTable();
     });
   }
@@ -2168,6 +2173,38 @@ function bindEvents() {
       if (searchInput) searchInput.value = '';
       currentSearch = '';
       clearSearchBtn.style.display = 'none';
+      // Sync inline search bar
+      const inlineSearch = document.getElementById('inlineMemberSearch');
+      if (inlineSearch) inlineSearch.value = '';
+      const clearInline = document.getElementById('clearInlineSearchBtn');
+      if (clearInline) clearInline.style.display = 'none';
+      renderMembersTable();
+    });
+  }
+
+  // Inline Search Bar (below heading, above member list)
+  const inlineMemberSearch = document.getElementById('inlineMemberSearch');
+  const clearInlineSearchBtn = document.getElementById('clearInlineSearchBtn');
+
+  if (inlineMemberSearch) {
+    inlineMemberSearch.addEventListener('input', (e) => {
+      currentSearch = e.target.value;
+      // Sync top search bar
+      if (searchInput) searchInput.value = currentSearch;
+      if (clearSearchBtn) clearSearchBtn.style.display = currentSearch ? 'block' : 'none';
+      if (clearInlineSearchBtn) clearInlineSearchBtn.style.display = currentSearch ? 'block' : 'none';
+      renderMembersTable();
+    });
+  }
+
+  if (clearInlineSearchBtn) {
+    clearInlineSearchBtn.addEventListener('click', () => {
+      if (inlineMemberSearch) inlineMemberSearch.value = '';
+      currentSearch = '';
+      clearInlineSearchBtn.style.display = 'none';
+      // Sync top search bar
+      if (searchInput) searchInput.value = '';
+      if (clearSearchBtn) clearSearchBtn.style.display = 'none';
       renderMembersTable();
     });
   }

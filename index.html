@@ -1303,6 +1303,23 @@
           </div>
         </div>
 
+        <!-- Inline Search Bar (below heading, above member list) -->
+        <div class="inline-member-search-wrap" style="padding: 10px 0 14px 0;">
+          <div class="search-box-wrap" style="max-width: 100%;">
+            <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="inlineMemberSearch" placeholder="Search members by name, phone, or plan..." autocomplete="off" style="width: 100%;">
+            <button class="clear-search-btn" id="clearInlineSearchBtn" title="Clear Search" style="display: none;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <div class="table-responsive">
           <table class="data-table" id="membersTable">
             <thead>

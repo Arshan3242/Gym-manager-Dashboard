@@ -1002,21 +1002,25 @@ function renderMembersTable() {
 
         <!-- WhatsApp Proof Receipt / Reminder Button (wa.me) -->
         <td class="col-whatsapp">
-          <a href="${waUrl}" target="_blank" rel="noopener noreferrer" 
-             class="btn-action-wa ${isPaid ? 'btn-action-wa-proof' : ''}" 
-             title="${isPaid ? 'Send Official Confirmation Proof Receipt on WhatsApp' : 'Open WhatsApp chat with pre-filled reminder'}">
-            ${isPaid ? `
+          ${isPaid ? `
+            <button class="btn-action-wa btn-action-wa-proof"
+              onclick="generateMemberReceiptPDF(members.find(x=>x.id==='${member.id}'))"
+              title="Generate & Share PDF Receipt via WhatsApp">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              <span>Proof Receipt</span>
-            ` : `
+              <span>PDF Receipt</span>
+            </button>
+          ` : `
+            <button class="btn-action-wa"
+              onclick="sendExpiryReminder(members.find(x=>x.id==='${member.id}'))"
+              title="Send polite WhatsApp renewal reminder">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
               </svg>
               <span>Send Reminder</span>
-            `}
-          </a>
+            </button>
+          `}
         </td>
 
         <!-- Quick Actions: Renew (+30d), Edit, Delete -->
@@ -1137,12 +1141,14 @@ function renderMembersTable() {
                   </svg>
                   <span>Receipt (रसीद)</span>
                 </button>
-                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="mob-btn mob-btn-wa-proof" title="Send Official Proof Receipt on WhatsApp">
+                <button type="button" class="mob-btn mob-btn-wa-proof"
+                  onclick="generateMemberReceiptPDF(members.find(x=>x.id==='${member.id}'))"
+                  title="Generate & Share PDF Receipt via WhatsApp">
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
-                  <span>WhatsApp Proof</span>
-                </a>
+                  <span>PDF Receipt</span>
+                </button>
               </div>
               <div class="mob-secondary-actions-row">
                 <button type="button" class="mob-btn-secondary-sm" onclick="openPaymentHistoryModal('${member.id}')" title="View Locked Payment History">
@@ -1182,12 +1188,14 @@ function renderMembersTable() {
                   </svg>
                   <span>Mark Paid (+30d)</span>
                 </button>
-                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="mob-btn mob-btn-wa-remind" title="Send WhatsApp Renewal Reminder">
+                <button type="button" class="mob-btn mob-btn-wa-remind"
+                  onclick="sendExpiryReminder(members.find(x=>x.id==='${member.id}'))"
+                  title="Send polite WhatsApp renewal reminder">
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
                     <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
                   </svg>
-                  <span>WhatsApp</span>
-                </a>
+                  <span>Send Reminder</span>
+                </button>
               </div>
               <div class="mob-secondary-actions-row">
                 <button type="button" class="mob-btn-secondary-sm" onclick="openEditModal('${member.id}')" title="Edit Member">
@@ -1216,6 +1224,229 @@ function getDirectWaLink(member) {
   const cleanPhone = sanitizePhone(member.phone);
   const msg = generateWhatsAppMessage(member);
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+}
+
+// ==========================================================================
+// Expiry Reminder — used by Urgent Follow-Ups section (NOT a fee receipt)
+// ==========================================================================
+function sendExpiryReminder(member) {
+  const gymName = localStorage.getItem(STORAGE_KEY_GYM_NAME) || DEFAULT_GYM_NAME;
+  const statusInfo = getMemberStatus(member.expiryDate);
+  const amountStr = `₹${Number(member.amount || 0).toLocaleString('en-IN')}`;
+  const cleanPhone = sanitizePhone(member.phone);
+
+  let statusLine = '';
+  if (statusInfo.code === 'expired') {
+    const daysAgo = Math.abs(statusInfo.daysRemaining);
+    statusLine = `Your membership *expired ${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago* (${formatDateDisplay(member.expiryDate)}).`;
+  } else if (statusInfo.code === 'expiring') {
+    const days = statusInfo.daysRemaining;
+    if (days === 0) {
+      statusLine = `Your membership *expires TODAY* (${formatDateDisplay(member.expiryDate)}).`;
+    } else if (days === 1) {
+      statusLine = `Your membership *expires TOMORROW* (${formatDateDisplay(member.expiryDate)}).`;
+    } else {
+      statusLine = `Your membership is *expiring in ${days} days* (${formatDateDisplay(member.expiryDate)}).`;
+    }
+  } else {
+    statusLine = `You have a pending fee of ${amountStr} for your membership.`;
+  }
+
+  const msg =
+    `Dear *${member.name}*,\n\n` +
+    `This is a friendly reminder from *${gymName}*. 🏋️\n\n` +
+    `${statusLine}\n\n` +
+    `💰 *Renewal Amount:* ${amountStr}\n\n` +
+    `Please visit the gym or contact us to renew your membership and continue your fitness journey without interruption. 💪\n\n` +
+    `Thank you for being a valued member!\n— *${gymName}*`;
+
+  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, '_blank', 'noopener,noreferrer');
+}
+
+// ==========================================================================
+// PDF Receipt Generator (jsPDF) — triggered from receipt modal & member list
+// ==========================================================================
+function generateMemberReceiptPDF(member, paymentItem) {
+  // Resolve payment data
+  const payments = member.payments || [];
+  const payment = paymentItem ||
+    (payments.length > 0 ? payments[payments.length - 1] : null);
+
+  const gymName    = localStorage.getItem(STORAGE_KEY_GYM_NAME)    || DEFAULT_GYM_NAME;
+  const gymTagline = localStorage.getItem(STORAGE_KEY_GYM_TAGLINE) || DEFAULT_GYM_TAGLINE;
+  const gymPhone   = localStorage.getItem(STORAGE_KEY_GYM_PHONE)   || DEFAULT_GYM_PHONE || '';
+  const gymAddress = localStorage.getItem(STORAGE_KEY_GYM_ADDRESS) || DEFAULT_GYM_ADDRESS || '';
+
+  const receiptId   = payment?.receiptId || `#REC-${1000 + (parseInt((member.id || '').replace(/\D/g, ''), 10) || 1)}`;
+  const payDate     = payment?.exactTime  || formatDateDisplay(payment?.timestamp || member.paymentDate || new Date());
+  const expiryDate  = formatDateDisplay(payment?.expiryDate || member.expiryDate);
+  const planType    = payment?.planType   || member.planType || 'General Fitness & Gym Membership';
+  const amount      = Number(payment?.amount || member.amount || 0);
+  const amountStr   = `Rs. ${amount.toLocaleString('en-IN')}`;
+  const memberPhone = `+91 ${formatPhonePretty(member.phone)}`;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a5' });
+
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+
+  // ── Background ──────────────────────────────────────────────
+  doc.setFillColor(10, 15, 30);
+  doc.rect(0, 0, W, H, 'F');
+
+  // ── Header gradient band ─────────────────────────────────────
+  doc.setFillColor(30, 27, 75);
+  doc.roundedRect(6, 6, W - 12, 36, 4, 4, 'F');
+
+  // ── Gym Name ─────────────────────────────────────────────────
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(255, 255, 255);
+  doc.text(gymName, W / 2, 20, { align: 'center' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(180, 180, 220);
+  doc.text(gymTagline, W / 2, 27, { align: 'center' });
+
+  if (gymPhone || gymAddress) {
+    doc.setFontSize(7);
+    doc.setTextColor(150, 150, 190);
+    doc.text(`${gymPhone}${gymPhone && gymAddress ? '  |  ' : ''}${gymAddress}`, W / 2, 33, { align: 'center' });
+  }
+
+  // ── "FEE RECEIPT" title ───────────────────────────────────────
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(99, 102, 241);
+  doc.text('FEE RECEIPT', W / 2, 52, { align: 'center' });
+
+  // underline
+  doc.setDrawColor(99, 102, 241);
+  doc.setLineWidth(0.5);
+  doc.line(W / 2 - 22, 54, W / 2 + 22, 54);
+
+  // ── Receipt meta row ─────────────────────────────────────────
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(160, 160, 200);
+  doc.text(`Receipt: ${receiptId}`, 12, 62);
+  doc.text(`Date: ${payDate}`, W - 12, 62, { align: 'right' });
+
+  // ── Info card background ──────────────────────────────────────
+  doc.setFillColor(20, 25, 50);
+  doc.roundedRect(8, 68, W - 16, 76, 3, 3, 'F');
+  doc.setDrawColor(50, 50, 100);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(8, 68, W - 16, 76, 3, 3, 'S');
+
+  // ── Detail rows ───────────────────────────────────────────────
+  const rows = [
+    ['Member Name',   member.name || '—'],
+    ['Phone',         memberPhone],
+    ['Plan / Batch',  planType],
+    ['Valid Till',    expiryDate],
+    ['Amount Paid',   amountStr],
+    ['Payment Status','PAID'],
+  ];
+
+  let rowY = 78;
+  const col1 = 14;
+  const col2 = W - 14;
+
+  rows.forEach(([label, value], i) => {
+    const isLast = i === rows.length - 1;
+
+    if (!isLast) {
+      // Divider
+      doc.setDrawColor(40, 40, 80);
+      doc.setLineWidth(0.2);
+      if (i > 0) doc.line(col1, rowY - 2, col2, rowY - 2);
+    }
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(130, 130, 170);
+    doc.text(label, col1, rowY + 3);
+
+    if (label === 'Amount Paid') {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(16, 185, 129); // green
+      doc.text(value, col2, rowY + 4, { align: 'right' });
+    } else if (label === 'Payment Status') {
+      // PAID badge box
+      doc.setFillColor(16, 185, 129);
+      doc.roundedRect(col2 - 22, rowY - 1, 22, 8, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text('✔ PAID', col2 - 11, rowY + 4.5, { align: 'center' });
+    } else {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(220, 220, 255);
+      doc.text(value, col2, rowY + 4, { align: 'right' });
+    }
+
+    rowY += 12;
+  });
+
+  // ── Dashed separator ─────────────────────────────────────────
+  doc.setLineDashPattern([1.5, 1.5], 0);
+  doc.setDrawColor(60, 60, 110);
+  doc.setLineWidth(0.3);
+  doc.line(10, 150, W - 10, 150);
+  doc.setLineDashPattern([], 0);
+
+  // ── Footer note ───────────────────────────────────────────────
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(7);
+  doc.setTextColor(100, 100, 150);
+  doc.text('This is an official fee receipt. Please retain for your records.', W / 2, 157, { align: 'center' });
+  doc.text(`Thank you for training with ${gymName}! 💪`, W / 2, 163, { align: 'center' });
+
+  // ── Watermark "PAID" stamp ────────────────────────────────────
+  doc.saveGraphicsState();
+  doc.setGState(new doc.GState({ opacity: 0.07 }));
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(60);
+  doc.setTextColor(16, 185, 129);
+  doc.text('PAID', W / 2, H / 2 + 10, { align: 'center', angle: 30 });
+  doc.restoreGraphicsState();
+
+  // ── Generate PDF blob ─────────────────────────────────────────
+  const safeName = (member.name || 'Member').replace(/[^a-zA-Z0-9]/g, '_');
+  const fileName = `Receipt_${safeName}.pdf`;
+
+  const pdfBlob = doc.output('blob');
+
+  // ── Share or Download ─────────────────────────────────────────
+  const cleanPhone  = sanitizePhone(member.phone);
+  const shareNote   = encodeURIComponent('Please find your attached fee receipt PDF. 🧾');
+  const waFallback  = `https://wa.me/${cleanPhone}?text=${shareNote}`;
+
+  if (navigator.canShare && navigator.share) {
+    const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+    if (navigator.canShare({ files: [pdfFile] })) {
+      navigator.share({
+        title: `Fee Receipt — ${member.name}`,
+        text: 'Please find your attached fee receipt PDF.',
+        files: [pdfFile]
+      }).catch(() => {
+        // Fallback: download + open WA
+        doc.save(fileName);
+        setTimeout(() => window.open(waFallback, '_blank', 'noopener,noreferrer'), 800);
+      });
+      return;
+    }
+  }
+
+  // Desktop / no Web Share API → auto-download + open WhatsApp with note
+  doc.save(fileName);
+  setTimeout(() => window.open(waFallback, '_blank', 'noopener,noreferrer'), 800);
 }
 
 // Helper: Initials for Avatar
@@ -1396,26 +1627,11 @@ window.openReceiptModalForPayment = function(memberId, paymentIndex) {
   const recAmount = document.getElementById('receiptAmountPaidDisplay');
   if (recAmount) recAmount.textContent = amountStr;
 
-  // Configure WhatsApp Share for this exact receipt
+  // Configure WhatsApp Share — generates PDF receipt and shares/downloads it
   const waShareBtn = document.getElementById('shareReceiptWaBtn');
   if (waShareBtn) {
     waShareBtn.onclick = () => {
-      const cleanPhone = sanitizePhone(member.phone);
-      const text = `🧾 *OFFICIAL FEE RECEIPT - ${gymName}*\n` +
-                   `----------------------------------------\n` +
-                   `📄 *Receipt ID:* ${recNo}\n` +
-                   `📅 *Payment Date & Time:* ${exactTimeStr}\n` +
-                   `👤 *Member Name:* ${member.name}\n` +
-                   `📱 *Phone:* +91 ${formatPhonePretty(member.phone)}\n` +
-                   `🏋️ *Plan / Batch:* ${paymentItem?.planType || member.planType || 'General Fitness'}\n` +
-                   `⏳ *Valid Till Date:* ${formattedExpiryDate}\n` +
-                   `💰 *Amount Paid:* ${amountStr}\n` +
-                   `----------------------------------------\n` +
-                   `Status: ✅ *PAID & VERIFIED (ANTI-FRAUD LOCKED)*\n` +
-                   `Thank you for training with us! 💪🔥`;
-
-      const shareUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
-      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+      generateMemberReceiptPDF(member, paymentItem);
     };
   }
 
